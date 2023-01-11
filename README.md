@@ -10,4 +10,4 @@ En la función setup, se establece una conexión WiFi y se inicializa el servido
 
 La función handleRoot es un manejador de eventos que se activa cuando se accede a la raíz ("/") del servidor web. En este caso, devuelve el contenido del archivo index.html.
 
-Por último, en la función loop, se actualiza el servidor FTP y el servidor web y encender y apaga el led built-in en el dispositivo cada segundo.
+Por último, en la función loop, se actualiza el servidor FTP y el servidor web.
