@@ -4,10 +4,14 @@ Este código es un ejemplo de cómo crear un servidor FTP y un servidor web en u
 
 Las librerias y sus funciones son las siguientes:
 
--ESP8266WiFi.h: Esta librería se encarga de conectar nuestro esp8266 a la red wifi.
+<h2>ESP8266WiFi.h</h2>
+Esta librería se encarga de conectar nuestro esp8266 a la red wifi.
 
--ESP8266WebServer.h: Esta librería se encarga de la pagina web.
+<h2>ESP8266WebServer.h</h2>
+Esta librería se encarga de la pagina web.
 
--SP8266FtpServer.h: Esta librería se encarga de la conexión FTP.
+<h2>SP8266FtpServer.h</h2>
+Esta librería se encarga de la conexión FTP.
 
--FS.h y map: Estas librerías se encargan de cargar los demas archivos como los js o los css.
+<h2>FS.h y map</h2>
+Estas librerías se encargan de cargar los demas archivos como los js o los css.
