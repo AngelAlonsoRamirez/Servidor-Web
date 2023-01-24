@@ -1,79 +1,71 @@
-#ifdef ESP8266
+//Librerias
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#elif defined ESP32
-#include <WiFi.h>
-#include "SPIFFS.h"
-#endif
-
 #include <ESP8266FtpServer.h>
+#include <FS.h>
+#include <map>
 
-const char* ssid = "TU_SSID";
-const char* password = "TU_SSID_PASSWORD";
+// Variables
+const char* ssid = "Mi-Wifi";
+const char* password = "MiClave";
+const char* userftp = "MiUsuario";
+const char* passftp = "MiContraseña";
+const String errorPage = "Pagina en mantenimiento";
 
-const char* user = "TU_CUENTA";
-const char* pass = "TU_PASSWORD.";
+// Ip, mascara y puerta de enlace
+IPAddress ip(192,168,1,60);
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
 
-
+// Iniciar FTP y abrir puerto 80
 FtpServer ftpSrv;
 ESP8266WebServer server(80);
 
-String readFile(const char* path) {
-  String content;
-  File file = SPIFFS.open(path, "r");
-  if (!file) {
-    return "Archivo no encontrado";
-  }
-  while (file.available()) {
-    content += char(file.read());
-  }
-  file.close();
-  return content;
-}
+// Cargar varios archivos
+std::map<String, String> staticFiles = {
+  {"/logo.png", "image/png"},
+  {"/estilo.css", "text/css"},
+  {"/script.js", "application/javascript"}
+};
 
+// Cargar archivo index
 void handleRoot() {
-  String html = readFile("/index.html");
+  String html = SPIFFS.exists("/index.html") ? SPIFFS.open("/index.html", "r").readString() : errorPage;
   server.send(200, "text/html", html);
 }
 
-void setup(void) {
-  Serial.begin(115200);
-  WiFi.begin(ssid, password);
-  Serial.println("");
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+// Mostrar pagina en mantenimiento y error
+void handleStaticFiles() {
+  String path = server.uri();
+  if (staticFiles.count(path) > 0) {
+    String file = SPIFFS.exists(path) ? SPIFFS.open(path, "r").readString() : errorPage;
+    server.send(200, staticFiles[path], file);
+  } else {
+    server.send(404, "text/html", errorPage);
   }
-  Serial.println("");
-  Serial.print("Conectado a ");
-  Serial.println(ssid);
-  Serial.print("IP: ");
-  Serial.println(WiFi.localIP());
+}
 
-#ifdef ESP32
-  if (SPIFFS.begin(true)) {
-#elif defined ESP8266
-  if (SPIFFS.begin()) {
-#endif
-      Serial.println("SPIFFS abierto!");
-      ftpSrv.begin(user,pass);
-  }    
-
+void setup(void) {
+// Conexion a wifi  
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Conectando a WiFi...");
+    Serial.println("Connecting to WiFi...");
   }
-  Serial.println("¡WiFi conectada");
+
+// Cargar servicio SPIFFS
+  SPIFFS.begin();
+  ftpSrv.begin(userftp, passftp);
 
   server.on("/", handleRoot);
-
-  server.begin();
-  Serial.println("Servidor iniciado");
+  for (auto& file : staticFiles) {
+    server.on(file.first, handleStaticFiles);    
 }
 
-void loop(void){
+server.begin();
+}
+
+void loop(void) {
   ftpSrv.handleFTP();
   server.handleClient();
 }
