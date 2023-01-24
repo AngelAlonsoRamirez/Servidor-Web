@@ -1,13 +1,10 @@
 # Servidor Web + Ftp
 
-Este código es un ejemplo de cómo crear un servidor FTP y un servidor web en un dispositivo ESP8266 o ESP32. Utiliza las librerías WiFi.h y ESP8266WebServer.h (o SPIFFS.h y ESP8266FtpServer.h en caso de ESP32).
+Este código es un ejemplo de cómo crear un servidor FTP y un servidor web en un dispositivo ESP8266.
 
-El código comienza definiendo algunas constantes que contienen la información de la red WiFi a la que el dispositivo debe conectarse (ssid y password) y las credenciales de usuario y contraseña para el servidor FTP (user y pass).
+Las librerias y sus funciones son las siguientes:
 
-Luego crea una instancia del servidor web y otra del servidor FTP. y una función readFile que se encarga de leer y devolver el contenido de un archivo en el sistema de archivos SPIFFS.
-
-En la función setup, se establece una conexión WiFi y se inicializa el servidor web y FTP.
-
-La función handleRoot es un manejador de eventos que se activa cuando se accede a la raíz ("/") del servidor web. En este caso, devuelve el contenido del archivo index.html.
-
-Por último, en la función loop, se actualiza el servidor FTP y el servidor web.
+-ESP8266WiFi.h: Esta librería se encarga de conectar nuestro esp8266 a la red wifi.
+-ESP8266WebServer.h: Esta librería se encarga de la pagina web.
+-SP8266FtpServer.h: Esta librería se encarga de la conexión FTP.
+-FS.h y map: Estas librerías se encargan de cargar los demas archivos como los js o los css.
